@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Avançado: Preposições em Inglês</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .quiz-container {
+            max-width: 500px;
+            width: 100%;
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        header {
+            background: linear-gradient(135deg, #5E35B1, #3949AB);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            margin: -30px -30px 20px -30px;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+        h1 {
+            color: #5E35B1;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #E0E0E0;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #5E35B1, #3949AB);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        .question {
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        .question.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .question h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.4;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            background-color: #F3F4F6;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .options li:hover {
+            background-color: #5E35B1;
+            color: white;
+            transform: translateX(5px);
+        }
+        .comment {
+            background-color: #F3F4F6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-style: italic;
+            font-size: 14px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .btn-next {
+            background: linear-gradient(135deg, #5E35B1, #3949AB);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .correct {
+            background-color: #4CAF50 !important;
+            color: white;
+        }
+        .incorrect {
+            background-color: #F44336 !important;
+            color: white;
+        }
+        .score-container {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        #confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <header>
+            <h2>QUIZ IGREJA PENTECOSTAL DEUS É AMOR</h2>
+        </header>
+        <h1>Quiz Avançado: Preposições em Inglês</h1>
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+        
+        <div id="question-container">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+
+        <div class="score-container">
+            Pontuação: <span id="score">0</span> / 5
+        </div>
+
+        <button class="btn-next" onclick="nextQuestion()">Próxima Pergunta</button>
+    </div>
+
+    <canvas id="confetti"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        const questions = [
+            {
+                question: "Which preposition best completes this sentence: 'The cat jumped _____ the table.'",
+                options: ["on", "in", "at", "by"],
+                correct: 0,
+                comment: "'On' é a preposição correta para indicar que o gato pulou para cima da mesa."
+            },
+            {
+                question: "Choose the correct preposition: 'She's been working _____ this project _____ months.'",
+                options: ["on ... for", "at ... since", "in ... for", "with ... since"],
+                correct: 0,
+                comment: "'On ... for' é a combinação correta. 'On' para trabalhar em um projeto e 'for' para indicar duração."
+            },
+            {
+                question: "Select the appropriate preposition: 'The suspect was accused _____ murder.'",
+                options: ["for", "of", "with", "by"],
+                correct: 1,
+                comment: "'Of' é a preposição correta após o verbo 'accuse' quando se refere ao crime do qual alguém é acusado."
+            },
+            {
+                question: "What's the correct preposition in this idiom: 'The project is _____ schedule.'",
+                options: ["in", "on", "at", "by"],
+                correct: 1,
+                comment: "'On schedule' é a expressão idiomática correta, significando que algo está progredindo conforme planejado."
+            },
+            {
+                question: "Choose the correct preposition: 'She's allergic _____ peanuts.'",
+                options: ["of", "from", "to", "with"],
+                correct: 2,
+                comment: "'Allergic to' é a construção correta em inglês para expressar alergia a algo."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            let questionHTML = `
+                <div class="question">
+                    <h3>${question.question}</h3>
+                    <ul class="options">
+                        ${question.options.map((option, index) => `
+                            <li onclick="checkAnswer(${index})">${option}</li>
+                        `).join('')}
+                    </ul>
+                    <div class="comment">${question.comment}</div>
+                </div>
+            `;
+            document.getElementById('question-container').innerHTML = questionHTML;
+            updateProgressBar();
+            setTimeout(() => {
+                document.querySelector('.question').classList.add('active');
+            }, 100);
+        }
+
+        function checkAnswer(selectedIndex) {
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.options li');
+            const comment = document.querySelector('.comment');
+
+            options.forEach((option, index) => {
+                option.onclick = null;
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                    if (index === selectedIndex) {
+                        score++;
+                        updateScore();
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+                    }
+                } else if (index === selectedIndex) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            comment.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function updateProgressBar() {
+            const progress = document.querySelector('.progress');
+            progress.style.width = `${(currentQuestion + 1) / questions.length * 100}%`;
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        function showFinalScore() {
+            const finalMessage = score === questions.length ? 
+                "Parabéns! Você acertou todas as questões!" : 
+                `Você acertou ${score} de ${questions.length} questões. Continue praticando!`;
+            
+            document.querySelector('.quiz-container').innerHTML = `
+                <h1>Quiz Concluído!</h1>
+                <div class="score-container">
+                    ${finalMessage}
+                </div>
+                <button class="btn-next" onclick="location.reload()">Tentar Novamente</button>
+            `;
+
+            if (score === questions.length) {
+                confetti({
+                    particleCount: 200,
+                    spread: 160,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
